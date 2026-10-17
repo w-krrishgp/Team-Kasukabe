@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import AppShell from '@/components/layout/AppShell';
+import PillarTwoIntelligence from '@/components/farm-intelligence/PillarTwoIntelligence';
 import {
   CloudSun,
   CloudRain,
@@ -30,9 +31,11 @@ export default function FarmIntelligencePage() {
   return (
     <AppShell
       title="📊 Farm Intelligence & Microclimate"
-      subtitle="Multi-signal synthesis uniting hyper-local weather, soil readiness and disease susceptibility."
+      subtitle="Pillar 2: Warnings and planning covering Weather, 5 km Disease Outbreaks, and Cold Storage."
     >
-      <div className="space-y-6">
+      <div className="space-y-8">
+        {/* PILLAR 2: FARM INTELLIGENCE (Weather, 5km Disease Outbreak, Cold Storage Slot Booking) */}
+        <PillarTwoIntelligence />
         {/* Recommended Spray Advisory Window Banner */}
         <div className="bg-gradient-to-r from-emerald-900 to-[#14261C] text-white rounded-2xl p-5 sm:p-6 shadow-md border border-[#264b38]">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

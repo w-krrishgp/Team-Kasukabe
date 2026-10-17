@@ -7,6 +7,7 @@ import {
   SchemeItem,
   StorageFacility,
   CropPool,
+  DiseaseOutbreakAlert,
 } from '@/types';
 
 export const CURRENT_FARMER: FarmerProfile = {
@@ -20,6 +21,11 @@ export const CURRENT_FARMER: FarmerProfile = {
   experienceYears: 8,
   phoneNumber: '+91 98765 43210',
   kccLimit: 240000,
+  gpsCoordinates: {
+    latitude: 28.9845,
+    longitude: 77.7064,
+    elevationMeters: 219,
+  },
 };
 
 export const FARM_HEALTH_METRICS: FarmHealthMetric[] = [
@@ -86,23 +92,23 @@ export const SMART_ACTIONS: SmartActionItem[] = [
     id: 'act-2',
     category: 'Weather',
     title: 'Rain expected tomorrow.',
-    description: 'Consider delaying spraying until the weather clears to avoid chemical wash-off.',
+    description: '14mm rain predicted for your farm’s GPS spot. Consider delaying spraying until the weather clears.',
     ctaText: 'Plan Activity',
     ctaLink: '/farm-intelligence',
     urgency: 'Medium',
     icon: 'CloudLightning',
-    tag: 'Spray Advisory',
+    tag: 'GPS Advisory',
   },
   {
     id: 'act-3',
     category: 'Disease Risk',
     title: 'Fungal disease risk is increasing.',
-    description: 'Humidity and recent weather conditions indicate elevated risk of wheat rust.',
+    description: '14 farmers within 5 km reported Yellow Rust. SW wind vectors indicate elevated community outbreak risk.',
     ctaText: 'Check Risk',
     ctaLink: '/farm-intelligence',
     urgency: 'Medium',
     icon: 'ShieldAlert',
-    tag: 'Microclimate Alert',
+    tag: '5km Outbreak Alert',
   },
   {
     id: 'act-4',
@@ -311,3 +317,76 @@ export const CROP_POOLS: CropPool[] = [
     joinedFarmersCount: 22,
   },
 ];
+
+export const HYPERLOCAL_WEATHER_SIGNALS = {
+  gpsLocation: '28.9845° N, 77.7064° E',
+  elevation: '219m ASL (Field Sector B-2)',
+  currentTemp: '22°C',
+  currentHumidity: '84%',
+  rainProbabilityNext24h: '75%',
+  expectedRainAmountMm: 14,
+  windSpeedKmh: 8,
+  windDirectionText: 'South-West (SW)',
+  wateringPlan: {
+    status: 'Skip Irrigation for 5 Days',
+    reason: 'Incoming 14mm rain front fulfills tillering moisture needs; avoids root waterlogging.',
+    nextScheduledWatering: 'Sunday, 06:30 AM',
+  },
+  sprayingPlan: {
+    status: 'Delay Spray by 48 Hours',
+    reason: 'Heavy rain will wash away chemical actives. Favorable dry window begins Thursday morning.',
+    bestWindow: 'Thursday 07:00 AM – 11:30 AM',
+  },
+};
+
+export const DISEASE_OUTBREAK_ALERT: DiseaseOutbreakAlert = {
+  id: 'outbreak-yr-01',
+  diseaseName: 'Wheat Yellow Rust (Stripe Rust)',
+  pathogen: 'Puccinia striiformis f. sp. tritici',
+  radiusKm: 5,
+  reportsCount: 14,
+  riskLevel: 'High',
+  nearestCaseKm: 1.8,
+  windDirection: 'South-West (SW) at 8 km/h',
+  sporeSpreadRisk: 'High Spore Dispersion Vector: SW wind blowing directly toward Ramesh Kumar’s wheat tillers.',
+  recommendedAction: 'Apply preventive bio-barrier (Neem oil emulsion) or prepare Propiconazole 25% EC for immediate application on Thursday morning.',
+  recentReports: [
+    {
+      id: 'rep-01',
+      farmerPseudonym: 'Farmer S. Yadav',
+      village: 'Daurala Village',
+      distanceKm: 1.8,
+      reportedAt: '3 hours ago',
+      affectedCrop: 'Wheat (PBW-550)',
+      severity: 'Moderate',
+    },
+    {
+      id: 'rep-02',
+      farmerPseudonym: 'Farmer H. Singh',
+      village: 'Mohiuddinpur',
+      distanceKm: 2.9,
+      reportedAt: '7 hours ago',
+      affectedCrop: 'Wheat (HD-2967)',
+      severity: 'Moderate',
+    },
+    {
+      id: 'rep-03',
+      farmerPseudonym: 'Farmer A. Tyagi',
+      village: 'Partapur North',
+      distanceKm: 3.8,
+      reportedAt: 'Yesterday',
+      affectedCrop: 'Wheat (Sharbati)',
+      severity: 'Severe',
+    },
+    {
+      id: 'rep-04',
+      farmerPseudonym: 'Farmer M. Sharma',
+      village: 'Modipuram Border',
+      distanceKm: 4.6,
+      reportedAt: 'Yesterday',
+      affectedCrop: 'Wheat (HD-3086)',
+      severity: 'Mild',
+    },
+  ],
+};
+

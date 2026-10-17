@@ -17,12 +17,23 @@ import {
   Award,
   Layers,
   ChevronRight,
+  X,
 } from 'lucide-react';
 import { STORAGE_FACILITIES, CROP_POOLS, CURRENT_FARMER } from '@/data/mockData';
 
 export default function StoragePage() {
   const [pooledLots, setPooledLots] = useState(CROP_POOLS);
   const [pledgedSuccess, setPledgedSuccess] = useState<string | null>(null);
+  const [selectedFacility, setSelectedFacility] = useState(STORAGE_FACILITIES[0]);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [bagsCount, setBagsCount] = useState(40);
+  const [durationMonths, setDurationMonths] = useState(2);
+  const [bookingConfirmed, setBookingConfirmed] = useState(false);
+
+  const handleBookSlot = (e: React.FormEvent) => {
+    e.preventDefault();
+    setBookingConfirmed(true);
+  };
 
   const handleJoinPool = (poolId: string) => {
     setPooledLots((prev) =>
@@ -247,7 +258,12 @@ export default function StoragePage() {
                   </span>
                   <button
                     type="button"
-                    className="px-3 py-1.5 rounded-lg bg-[#1b4332] hover:bg-[#2d6a4f] text-white text-xs font-semibold shadow-sm transition-colors"
+                    onClick={() => {
+                      setSelectedFacility(facility);
+                      setIsBookingOpen(true);
+                      setBookingConfirmed(false);
+                    }}
+                    className="px-3.5 py-1.5 rounded-lg bg-[#1b4332] hover:bg-[#2d6a4f] text-white text-xs font-semibold shadow-sm transition-colors"
                   >
                     Reserve Space
                   </button>
@@ -256,6 +272,154 @@ export default function StoragePage() {
             ))}
           </div>
         </div>
+
+        {/* Pillar 2: Cold Storage Booking Modal */}
+        {isBookingOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+            <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-[#dfe5dc] relative animate-in zoom-in-95 duration-150">
+              <button
+                onClick={() => setIsBookingOpen(false)}
+                className="absolute top-5 right-5 p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              {bookingConfirmed ? (
+                <div className="text-center py-6 space-y-4">
+                  <div className="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                    <CheckCircle2 className="w-10 h-10" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-[#14261C]">
+                      Cold Storage Slot Confirmed!
+                    </h3>
+                    <p className="text-xs text-[#52695c] mt-1 max-w-sm mx-auto">
+                      Space reserved at <strong>{selectedFacility.name}</strong>. Free space updated.
+                    </p>
+                  </div>
+
+                  <div className="p-4 bg-[#f8faf7] rounded-2xl border border-[#e5ebe2] text-left text-xs space-y-2 max-w-sm mx-auto">
+                    <div className="flex justify-between">
+                      <span className="text-[#667e70]">Booking ID:</span>
+                      <strong className="text-[#14261C]">#CS-MEE-2026-9041</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[#667e70]">Farmer:</span>
+                      <strong className="text-[#14261C]">{CURRENT_FARMER.name}</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[#667e70]">Reserved Bags:</span>
+                      <strong className="text-emerald-700">{bagsCount} Bags</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[#667e70]">Monthly Rent:</span>
+                      <strong className="text-[#14261C]">₹{bagsCount * selectedFacility.pricePerBagMonth} / mo</strong>
+                    </div>
+                  </div>
+
+                  <div className="pt-2">
+                    <button
+                      onClick={() => setIsBookingOpen(false)}
+                      className="px-6 py-2.5 rounded-xl bg-[#1b4332] hover:bg-[#2d6a4f] text-white text-xs font-bold transition-colors shadow-sm"
+                    >
+                      Done &amp; Close Pass
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={handleBookSlot} className="space-y-4">
+                  <div>
+                    <div className="flex items-center gap-2 text-xs font-bold text-[#2d6a4f] uppercase tracking-wider">
+                      <Warehouse className="w-4 h-4" />
+                      <span>Reserve Cold Storage Slot</span>
+                    </div>
+                    <h3 className="text-lg font-bold text-[#14261C] mt-1">
+                      {selectedFacility.name}
+                    </h3>
+                    <p className="text-xs text-[#667e70]">
+                      {selectedFacility.location} • {selectedFacility.distanceKm} km from Ramesh&apos;s farm
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-950 flex items-center justify-between">
+                    <span>Available Free Space:</span>
+                    <strong className="text-emerald-800 text-sm">
+                      {selectedFacility.availableBags.toLocaleString()} Bags
+                    </strong>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-bold text-[#14261C] mb-1">
+                        Bags to Store (50 kg / bag)
+                      </label>
+                      <input
+                        type="number"
+                        min="10"
+                        max={selectedFacility.availableBags}
+                        value={bagsCount}
+                        onChange={(e) => setBagsCount(Number(e.target.value))}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-[#d2dbd0] text-sm text-[#14261C] focus:outline-none focus:ring-2 focus:ring-[#52b788]"
+                        required
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold text-[#14261C] mb-1">
+                          Produce Type
+                        </label>
+                        <select className="w-full px-3.5 py-2.5 rounded-xl border border-[#d2dbd0] text-sm text-[#14261C] focus:outline-none focus:ring-2 focus:ring-[#52b788]">
+                          <option>Wheat (HD-2967)</option>
+                          <option>Mustard (Pusa Bold)</option>
+                          <option>Seed Potato</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-[#14261C] mb-1">
+                          Duration
+                        </label>
+                        <select
+                          value={durationMonths}
+                          onChange={(e) => setDurationMonths(Number(e.target.value))}
+                          className="w-full px-3.5 py-2.5 rounded-xl border border-[#d2dbd0] text-sm text-[#14261C] focus:outline-none focus:ring-2 focus:ring-[#52b788]"
+                        >
+                          <option value="1">1 Month</option>
+                          <option value="2">2 Months (Recommended)</option>
+                          <option value="3">3 Months</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-[#f8faf7] rounded-xl border border-[#e5ebe2] flex items-center justify-between text-xs">
+                      <span className="text-[#667e70]">Monthly Rent:</span>
+                      <strong className="text-sm font-bold text-[#14261C]">
+                        ₹{bagsCount * selectedFacility.pricePerBagMonth} / mo
+                      </strong>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 flex items-center justify-end gap-2.5 border-t border-[#edf1ea]">
+                    <button
+                      type="button"
+                      onClick={() => setIsBookingOpen(false)}
+                      className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-5 py-2.5 rounded-xl bg-[#1b4332] hover:bg-[#2d6a4f] text-white text-xs font-bold transition-all shadow-sm"
+                    >
+                      Confirm Booking
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </AppShell>
   );

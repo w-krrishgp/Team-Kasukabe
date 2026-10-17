@@ -10,6 +10,11 @@ export interface FarmerProfile {
   avatarUrl?: string;
   phoneNumber?: string;
   kccLimit: number;
+  gpsCoordinates?: {
+    latitude: number;
+    longitude: number;
+    elevationMeters: number;
+  };
 }
 
 export type RiskLevel = 'Low' | 'Medium' | 'High';
@@ -92,4 +97,41 @@ export interface CropPool {
   negotiatedPremium: string;
   closingInDays: number;
   joinedFarmersCount: number;
+}
+
+// Pillar 2: Farm Intelligence Interfaces
+export interface NearbyDiseaseReport {
+  id: string;
+  farmerPseudonym: string;
+  village: string;
+  distanceKm: number;
+  reportedAt: string;
+  affectedCrop: string;
+  severity: 'Mild' | 'Moderate' | 'Severe';
+}
+
+export interface DiseaseOutbreakAlert {
+  id: string;
+  diseaseName: string;
+  pathogen: string;
+  radiusKm: number;
+  reportsCount: number;
+  riskLevel: 'Low' | 'Medium' | 'High' | 'Severe';
+  nearestCaseKm: number;
+  windDirection: string;
+  sporeSpreadRisk: string;
+  recommendedAction: string;
+  recentReports: NearbyDiseaseReport[];
+}
+
+export interface ColdStorageBooking {
+  bookingId: string;
+  facilityId: string;
+  facilityName: string;
+  bagsCount: number;
+  cropType: string;
+  bookingDate: string;
+  durationMonths: number;
+  totalMonthlyRent: number;
+  status: 'Confirmed' | 'Pending';
 }
