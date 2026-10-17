@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --primary-green: #1b4332;
+    --primary-green-light: #2d6a4f;
+    --sprout: #52b788;
+    --sprout-light: #d8f3dc;
+    --wheat: #d4a373;
+    --wheat-light: #faedcd;
+    --amber-warning: #e76f51;
+    --earth-dark: #122119;
+  }
+}
+
+/* Custom smooth transitions and clean scrollbars */
+html {
+  scroll-behavior: smooth;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f4ef;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5c8;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #97a694;
+}
+
+/* Subtle glow and glass styles */
+.glass-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(229, 235, 227, 0.9);
+}
+
+.farm-gradient-hero {
+  background: radial-gradient(circle at 10% 20%, rgba(216, 243, 220, 0.45) 0%, rgba(254, 250, 224, 0.35) 45%, rgba(251, 251, 250, 1) 100%);
+}
